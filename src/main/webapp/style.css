@@ -1,0 +1,11 @@
+input {
+	float:right;
+	clear:both;
+	width:200px;
+}
+
+td.center {
+	text-align: center;
+	vertical-align: middle;
+}
+

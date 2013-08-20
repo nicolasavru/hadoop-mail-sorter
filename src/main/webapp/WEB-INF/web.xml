@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app 
+   xmlns="http://java.sun.com/xml/ns/javaee" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+   version="2.5">
+  <servlet>
+    <servlet-name>MailSorter</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.MailSorterServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MailSorter</servlet-name>
+    <url-pattern>/mailsorter/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Hadoop</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.RunHadoopServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Hadoop</servlet-name>
+    <url-pattern>/hadoop/*</url-pattern>
+  </servlet-mapping>
+</web-app>
