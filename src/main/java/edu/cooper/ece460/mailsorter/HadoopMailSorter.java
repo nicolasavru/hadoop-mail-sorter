@@ -3,7 +3,10 @@ package edu.cooper.ece460.mailsorter;
 import java.io.*;
 import java.util.*;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.apache.hadoop.fs.*;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.util.*;
@@ -18,13 +21,32 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.mahout.math.*;
 
 public class HadoopMailSorter {
+    public static void recursePath(Configuration conf, Path path, Job job){
+        try{
+            FileSystem fs = path.getFileSystem(conf);
+            FileStatus[] fstats = fs.listStatus(path);
+            if(fstats != null){
+                for(FileStatus f : fstats){
+                    Path p = f.getPath();;
+                    if(fs.isFile(p)){
+                        FileInputFormat.addInputPath(job, p);
+                    }
+                    else{
+                        System.err.println("dir:" + p.toString());
+                        recursePath(conf, p, job);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // shouldn't be here
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main (String[] args) throws Exception {
         Configuration conf = new Configuration();
         Path inPath = new Path(args[0]);
         Path outPath1 = new Path(args[1]);
-        // Path outPath2 = new Path(args[2]);
-        // Path outPath3 = new Path(args[3]);
-
 
         Job job1 = new Job(conf, "HadoopMailSorter");
         job1.setJarByClass(HadoopMailSorter.class);
@@ -39,10 +61,9 @@ public class HadoopMailSorter {
         job1.setOutputKeyClass(Text.class);
         // job1.setOutputValueClass(VectorWritable.class);
         job1.setOutputValueClass(Text.class);
-        FileInputFormat.addInputPath(job1, inPath);
+        recursePath(conf, inPath, job1);
         FileOutputFormat.setOutputPath(job1, outPath1);
         job1.waitForCompletion(true);
-
     }
 }
 
