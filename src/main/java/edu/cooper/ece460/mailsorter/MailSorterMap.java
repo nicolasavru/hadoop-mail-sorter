@@ -26,23 +26,27 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
 
-public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Text> {
+import org.apache.mahout.math.*;
+
+public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, VectorWritable> {
     Context context;
 
-    private Text filenameKey;
+    private Path filenamePath;
 
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         InputSplit split = context.getInputSplit();
         Path path = ((FileSplit) split).getPath();
-        filenameKey = new Text(path.toString());
+        filenamePath = path;
     }
 
     @Override
     public void map(NullWritable key, BytesWritable value, Context context)
         throws IOException, InterruptedException
     {
-        this.context = context;
+        // this.context = context;
+
+        VectorWritable v = new VectorWritable();
 
         Session s = Session.getDefaultInstance(new Properties());
         InputStream is = new ByteArrayInputStream(value.getBytes());
@@ -69,7 +73,7 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Tex
                 }
                 else if(content instanceof Multipart){
                     Multipart mp = (Multipart) content;
-                    for (int i=0; i<mp.getCount(); i++) {
+                    for (int i = 0; i < mp.getCount(); i++) {
                         BodyPart bp = mp.getBodyPart(i);
                         System.err.println(bp.getContentType());
                         Object c = bp.getContent();
@@ -83,16 +87,16 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Tex
             }
 
             Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
-            List<String> strlist = LuceneUtil.tokenizeString(analyzer, body);
-            for(String str : strlist) {
-                System.err.println(str);
-            }
-
+            List<String> data = MailSorterUtil.tokenizeString(analyzer, body);
+            v.set(MailSorterUtil.encode(filenamePath.toString(), data));
         }
         catch (MessagingException e) {
             System.err.println("got e");
         }
 
-        context.write(filenameKey, new Text("test"));
+        // assumes mail in in SOMEDIR/cur, etc.
+        String dir = filenamePath.getParent().getParent().toString();
+
+        context.write(new Text(dir), v);
     }
-    }
+}
