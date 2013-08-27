@@ -54,7 +54,7 @@ public class HadoopMailSorter {
         job1.setReducerClass(MailSorterReduce.class);
         job1.setNumReduceTasks(12);
         job1.setMapOutputKeyClass(Text.class);
-        job1.setMapOutputValueClass(VectorWritable.class);
+        job1.setMapOutputValueClass(Text.class);
         job1.setInputFormatClass(WholeFileInputFormat.class);
         job1.setOutputFormatClass(SequenceFileOutputFormat.class);
         // job1.setOutputFormatClass(TextOutputFormat.class);

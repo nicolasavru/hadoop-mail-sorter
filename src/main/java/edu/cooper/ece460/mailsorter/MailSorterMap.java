@@ -28,7 +28,7 @@ import org.apache.lucene.util.Version;
 
 import org.apache.mahout.math.*;
 
-public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, VectorWritable> {
+public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Text> {
     Context context;
 
     private Path filenamePath;
@@ -46,10 +46,13 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Vec
     {
         // this.context = context;
 
+        String dir = filenamePath.getParent().getParent().getName().toString();
+
         VectorWritable v = new VectorWritable();
 
         Session s = Session.getDefaultInstance(new Properties());
         InputStream is = new ByteArrayInputStream(value.getBytes());
+        String out = "default";
         try {
             MimeMessage message = new MimeMessage(s, is);
             message.getAllHeaderLines();
@@ -86,17 +89,24 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Vec
                 System.err.println("got error");
             }
 
-            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
+            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
             List<String> data = MailSorterUtil.tokenizeString(analyzer, body);
-            v.set(MailSorterUtil.encode(filenamePath.toString(), data));
+            // v.set(MailSorterUtil.encode(filenamePath.toString(), data));
+            v.set(MailSorterUtil.encode(dir, data));
+
+            out = "";
+            for(String datum : data){
+                out += (datum + " ");
+            }
         }
         catch (MessagingException e) {
             System.err.println("got e");
         }
 
         // assumes mail in in SOMEDIR/cur, etc.
-        String dir = filenamePath.getParent().getParent().toString();
 
-        context.write(new Text(dir), v);
+
+        // context.write(new Text(dir), v);
+        context.write(new Text(dir), new Text(out));
     }
 }

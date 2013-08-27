@@ -3,6 +3,8 @@ package edu.cooper.ece460.mailsorter;
 import java.io.*;
 // import java.util.*;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
@@ -22,14 +24,14 @@ import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.mahout.vectorizer.encoders.*;
 import org.apache.mahout.math.*;
 
-public class MailSorterReduce extends Reducer<Text, VectorWritable, NullWritable, NullWritable> {
+public class MailSorterReduce extends Reducer<Text, Text, NullWritable, NullWritable> {
     public static final byte[] cf = "userhost".getBytes();
 
     @Override
-    public void reduce(Text key, Iterable<VectorWritable> values, Context context)
+    public void reduce(Text key, Iterable<Text> values, Context context)
         throws IOException, InterruptedException
     {
-        Path path = new Path(key + ".seq");
+        Path path = new Path("seq/" + key + ".seq");
         System.err.println("seqfile: " + path.toString());
         Configuration conf = new Configuration();
         // FileSystem fs = FileSystem.get(conf);
@@ -37,11 +39,11 @@ public class MailSorterReduce extends Reducer<Text, VectorWritable, NullWritable
 
         SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path,
                                                              Text.class,
-                                                             VectorWritable.class);
+                                                             Text.class);
 
-        for(VectorWritable value : values){
-            NamedVector v = (NamedVector) value.get();
-            writer.append(new Text(v.getName()), value);
+        for(Text value : values){
+            // NamedVector v = (NamedVector) value.get();
+            writer.append(new Text("/"+key.toString()+"/"+DigestUtils.md5Hex(value.toString())), value);
         }
         writer.close();
 
