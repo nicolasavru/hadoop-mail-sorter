@@ -23,7 +23,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.standard.*;
 import org.apache.lucene.util.Version;
 
 import org.apache.mahout.math.*;
@@ -46,6 +46,7 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Tex
     {
         // this.context = context;
 
+        // assumes mail in in SOMEDIR/cur, etc.
         String dir = filenamePath.getParent().getParent().getName().toString();
 
         VectorWritable v = new VectorWritable();
@@ -66,6 +67,23 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Tex
             // System.err.println("mapper:" + (new String(value.getBytes(), "UTF-8")));
             // System.err.println("mapper:" + message.getSubject() + "; " +
             //                    (message.getFrom()[0]).toString());
+
+            Analyzer standard_analyzer = new StandardAnalyzer(Version.LUCENE_43);
+            Analyzer email_analyzer = new UAX29URLEmailAnalyzer(Version.LUCENE_43);
+
+            Address[] fromAddrs = message.getFrom();
+            String fromAddrstr = "";
+            for(Address addr: fromAddrs){
+                fromAddrstr += (addr.toString() + " ");
+            }
+            List<String> fromData = MailSorterUtil.tokenizeString(email_analyzer, fromAddrstr);
+
+            Address[] toAddrs = message.getAllRecipients();
+            String toAddrstr = "";
+            for(Address addr: toAddrs){
+                toAddrstr += (addr.toString() + " ");
+            }
+            List<String> toData = MailSorterUtil.tokenizeString(email_analyzer, toAddrstr);
 
             String body = "empty :(";
             try {
@@ -89,22 +107,28 @@ public class MailSorterMap extends Mapper<NullWritable, BytesWritable, Text, Tex
                 System.err.println("got error");
             }
 
-            Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_43);
-            List<String> data = MailSorterUtil.tokenizeString(analyzer, body);
-            // v.set(MailSorterUtil.encode(filenamePath.toString(), data));
-            v.set(MailSorterUtil.encode(dir, data));
+            List<String> bodyData = MailSorterUtil.tokenizeString(standard_analyzer, body);
 
             out = "";
-            for(String datum : data){
+
+            out += "FROM ";
+            for(String from: fromData){
+                out += (from + " ");
+            }
+
+            out += "TO ";
+            for(String to: toData){
+                out += (to + " ");
+            }
+
+            out += "BODY ";
+            for(String datum : bodyData){
                 out += (datum + " ");
             }
         }
         catch (MessagingException e) {
             System.err.println("got e");
         }
-
-        // assumes mail in in SOMEDIR/cur, etc.
-
 
         // context.write(new Text(dir), v);
         context.write(new Text(dir), new Text(out));
