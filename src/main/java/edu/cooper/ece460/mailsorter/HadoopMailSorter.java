@@ -46,13 +46,15 @@ public class HadoopMailSorter {
     public static void main (String[] args) throws Exception {
         Configuration conf = new Configuration();
         Path inPath = new Path(args[0]);
-        Path outPath1 = new Path(args[1]);
+        Path outPath = new Path(args[1]);
+
+        conf.set("seqdir", args[1]);
 
         Job job1 = new Job(conf, "HadoopMailSorter");
         job1.setJarByClass(HadoopMailSorter.class);
         job1.setMapperClass(MailSorterMap.class);
         job1.setReducerClass(MailSorterReduce.class);
-        job1.setNumReduceTasks(12);
+        job1.setNumReduceTasks(50);
         job1.setMapOutputKeyClass(Text.class);
         job1.setMapOutputValueClass(Text.class);
         job1.setInputFormatClass(WholeFileInputFormat.class);
@@ -62,7 +64,7 @@ public class HadoopMailSorter {
         job1.setOutputKeyClass(NullWritable.class);
         job1.setOutputValueClass(NullWritable.class);
         recursePath(conf, inPath, job1);
-        FileOutputFormat.setOutputPath(job1, outPath1);
+        FileOutputFormat.setOutputPath(job1, new Path("/tmp/foo"));
         job1.waitForCompletion(true);
     }
 }

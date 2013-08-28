@@ -4,21 +4,51 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
    version="2.5">
+
   <servlet>
-    <servlet-name>MailSorter</servlet-name>
-    <servlet-class>edu.cooper.ece460.http.MailSorterServlet</servlet-class>
+    <servlet-name>Maildir2seqServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.Maildir2seqServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>MailSorter</servlet-name>
-    <url-pattern>/mailsorter/*</url-pattern>
+    <servlet-name>Maildir2seqServlet</servlet-name>
+    <url-pattern>/maildir2seq_s/*</url-pattern>
   </servlet-mapping>
 
   <servlet>
-    <servlet-name>Hadoop</servlet-name>
-    <servlet-class>edu.cooper.ece460.http.RunHadoopServlet</servlet-class>
+    <servlet-name>Seq2sparseServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.Seq2sparseServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>Hadoop</servlet-name>
-    <url-pattern>/hadoop/*</url-pattern>
+    <servlet-name>Seq2sparseServlet</servlet-name>
+    <url-pattern>/seq2sparse_s/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SplitServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.SplitServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SplitServlet</servlet-name>
+    <url-pattern>/split_s/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TrainnbServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.TrainnbServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TrainnbServlet</servlet-name>
+    <url-pattern>/trainnb_s/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>TestnbServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.TestnbServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TestnbServlet</servlet-name>
+    <url-pattern>/testnb_s/*</url-pattern>
+  </servlet-mapping>
+
+
 </web-app>

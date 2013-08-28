@@ -1,0 +1,35 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>MailSorter</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<h1>
+  Mail Sorting with Hadoop
+</h1>
+
+<div style="float:left; width:400px; padding-left:20px;">
+  <p>Convert Sequence Files to Sparse Vector Sequence Files</p>
+  <form method="post" name="seq2sparse_s" id="seq2sparse" action="seq2sparse_s">
+    <fieldset>
+      <legend>Input</legend>
+      <dl>
+        <label for="input">Sequence File Dir (HDFS)</label>
+        <input type="text" value="seqdir" name="input" class="required" id="input" />
+      </dl>
+    </fieldset>
+    <fieldset>
+      <legend>Output</legend>
+      <dl>
+        <label for="output">Vector Dir (HDFS)</label>
+        <input type="text" value="vecdir" name="output" class="required" id="output" />
+      </dl>
+    </fieldset>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

@@ -1,8 +1,8 @@
 <html>
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <title>MailSorter</title>
-    <link rel="stylesheet" href="style.css" type="text/css">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>MailSorter</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body>
 <h1>
@@ -10,31 +10,11 @@ Mail Sorting with Hadoop
 </h1>
 
 <div style="float:left; width:400px; padding-left:20px;">
-    <p>Run Hadoop program with arguments</p>
-    <form method="post" name="HadoopMailSorter" id="HadoopMailSorter" action="hadoop">
-        <fieldset>
-            <legend>Input</legend>
-            <dl>
-                <label for="jar">JAR file (Local)</label>
-                <input type="text" value="target/HadoopMailSorter-1.0.jar" name="jar" class="required" id="jar" />
-            </dl>
-            <dl>
-                <label for="input">Input directory (HDFS)</label>
-                <input type="text" value="mailsorter_in" name="input" class="required" id="input" />
-            </dl>
-        </fieldset>
-        <fieldset>
-            <legend>Output</legend>
-            <dl>
-                    <label for="output">Output Table</label>
-                    <input type="text" value="mailsorter_out" name="output" class="required" id="outcite" />
-            </dl>
-        </fieldset>
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
-    <a href="mailsorter">Sort Mail</a>
+  <a href="maildir2seq.html">Convert Maildir to Data Sequence Files</a><br>
+  <a href="seq2sparse.html">Convert Data Sequence Files to Vector Sequence Files</a><br>
+  <a href="split.html">Split Vectors into Training and Testing Sets</a><br>
+  <a href="trainnb.html">Train Naive Bayes Classifier</a><br>
+  <a href="testnb.html">Test Naive Bayes Classifier</a><br>
 </div>
 </body>
 </html>

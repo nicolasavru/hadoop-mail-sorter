@@ -31,10 +31,8 @@ public class MailSorterReduce extends Reducer<Text, Text, NullWritable, NullWrit
     public void reduce(Text key, Iterable<Text> values, Context context)
         throws IOException, InterruptedException
     {
-        Path path = new Path("seq/" + key + ".seq");
-        System.err.println("seqfile: " + path.toString());
-        Configuration conf = new Configuration();
-        // FileSystem fs = FileSystem.get(conf);
+        Configuration conf = context.getConfiguration();
+        Path path = new Path(conf.get("seqdir") + "/" + key + ".seq");
         FileSystem fs = path.getFileSystem(conf);
 
         SequenceFile.Writer writer = new SequenceFile.Writer(fs, conf, path,
@@ -42,12 +40,9 @@ public class MailSorterReduce extends Reducer<Text, Text, NullWritable, NullWrit
                                                              Text.class);
 
         for(Text value : values){
-            // NamedVector v = (NamedVector) value.get();
             writer.append(new Text("/"+key.toString()+"/"+DigestUtils.md5Hex(value.toString())), value);
         }
         writer.close();
-
-        // context.write(key, new VectorWritable(new NamedVector(v, who)));
     }
 }
 

@@ -1,0 +1,39 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>MailSorter</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<h1>
+  Mail Sorting with Hadoop
+</h1>
+
+<div style="float:left; width:400px; padding-left:20px;">
+  <p>Convert Maildir to Data Sequence Files</p>
+  <form method="post" name="Maildir2seq" id="Maildir2seq" action="maildir2seq_s">
+    <fieldset>
+      <legend>Input</legend>
+      <dl>
+        <label for="jar">JAR file (Local)</label>
+        <input type="text" value="target/HadoopMailSorter-1.0.jar" name="jar" class="required" id="jar" />
+      </dl>
+      <dl>
+        <label for="input">Input Maildir (HDFS)</label>
+        <input type="text" value="Maildir" name="input" class="required" id="input" />
+      </dl>
+    </fieldset>
+    <fieldset>
+      <legend>Output</legend>
+      <dl>
+        <label for="output">Sequence File Dir</label>
+        <input type="text" value="seqdir" name="output" class="required" id="output" />
+      </dl>
+    </fieldset>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

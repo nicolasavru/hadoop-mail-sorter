@@ -1,0 +1,43 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>MailSorter</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<h1>
+  Mail Sorting with Hadoop
+</h1>
+
+<div style="float:left; width:400px; padding-left:20px;">
+  <p>Test Naive Bayes Classifier</p>
+  <form method="post" name="testnb" id="testnb" action="testnb_s">
+    <fieldset>
+      <legend>Input</legend>
+      <dl>
+        <label for="input">Testing Vector Dir (HDFS)</label>
+        <input type="text" value="traindir" name="input" class="required" id="input" />
+      </dl>
+      <dl>
+        <label for="model">Model File (HDFS)</label>
+        <input type="text" value="model" name="model" class="required" id="model" />
+      </dl>
+      <dl>
+        <label for="labelindex">Label Index File (HDFS)</label>
+        <input type="text" value="labelindex" name="labelindex" class="required" id="labelindex" />
+      </dl>
+    </fieldset>
+    <fieldset>
+      <legend>Output</legend>
+      <dl>
+        <label for="output">Testing Output Dir (HDFS)</label>
+        <input type="text" value="output" name="output" class="required" id="output" />
+      </dl>
+    </fieldset>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>
