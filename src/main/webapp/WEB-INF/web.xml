@@ -58,4 +58,13 @@
     <servlet-name>ClassifyServlet</servlet-name>
     <url-pattern>/classify_s/*</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>ReadResultsServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.ReadResultsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ReadResultsServlet</servlet-name>
+    <url-pattern>/read_results_s/*</url-pattern>
+  </servlet-mapping>
 </web-app>

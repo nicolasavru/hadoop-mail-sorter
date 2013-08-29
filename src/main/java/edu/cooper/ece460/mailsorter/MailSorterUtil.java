@@ -65,23 +65,41 @@ public final class MailSorterUtil {
         return new NamedVector(v, label);
     }
 
+    public static void recursePath(Configuration conf, Path path, Job job){
+        try{
+            FileSystem fs = path.getFileSystem(conf);
+            FileStatus[] fstats = fs.listStatus(path);
+            if(fstats != null){
+                for(FileStatus f : fstats){
+                    Path p = f.getPath();;
+                    if(fs.isFile(p)){
+                        // connection times out otherwise
+                        System.err.println("file:" + p.toString());
+                        FileInputFormat.addInputPath(job, p);
+                    }
+                    else{
+                        System.err.println("dir:" + p.toString());
+                        recursePath(conf, p, job);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            // shouldn't be here
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<String> getText(BytesWritable value) throws InterruptedException {
+        return getText(value, true);
+    }
+
+    public static List<String> getText(BytesWritable value, Boolean tokenizep) throws InterruptedException {
         Session s = Session.getDefaultInstance(new Properties());
         InputStream is = new ByteArrayInputStream(value.getBytes());
         List<String> out = new ArrayList<String>();
         try {
             MimeMessage message = new MimeMessage(s, is);
             message.getAllHeaderLines();
-
-            // for (Enumeration<Header> e = message.getAllHeaders(); e.hasMoreElements();) {
-            //     Header h = e.nextElement();
-            //     h.getName();
-            //     h.getValue();
-            // }
-
-            // System.err.println("mapper:" + (new String(value.getBytes(), "UTF-8")));
-            // System.err.println("mapper:" + message.getSubject() + "; " +
-            //                    (message.getFrom()[0]).toString());
 
             Analyzer standard_analyzer = new StandardAnalyzer(Version.LUCENE_43);
             Analyzer email_analyzer = new UAX29URLEmailAnalyzer(Version.LUCENE_43);
@@ -93,7 +111,6 @@ public final class MailSorterUtil {
                     fromAddrstr += (addr.toString() + " ");
                 }
             }
-            List<String> fromData = tokenizeString(email_analyzer, fromAddrstr);
 
             Address[] toAddrs = message.getAllRecipients();
             String toAddrstr = "";
@@ -102,9 +119,10 @@ public final class MailSorterUtil {
                     toAddrstr += (addr.toString() + " ");
                 }
             }
-            List<String> toData = tokenizeString(email_analyzer, toAddrstr);
 
-            String body = "empty :(";
+            String subject = message.getSubject();
+
+            String body = "";
             try {
                 Object content = message.getContent();
                 // System.err.println(content.getContentType());
@@ -130,16 +148,30 @@ public final class MailSorterUtil {
                 System.err.println("IOException");
             }
 
-            List<String> bodyData = tokenizeString(standard_analyzer, body);
+            if(tokenizep){
+                List<String> fromData = tokenizeString(email_analyzer, fromAddrstr);
+                List<String> toData = tokenizeString(email_analyzer, toAddrstr);
+                List<String> subjectData = tokenizeString(standard_analyzer, subject);
+                List<String> bodyData = tokenizeString(standard_analyzer, body);
 
-            out.add("FROM ");
-            out.addAll(fromData);
+                out.add("FROM ");
+                out.addAll(fromData);
 
-            out.add("TO ");
-            out.addAll(toData);
+                out.add("TO ");
+                out.addAll(toData);
 
-            out.add("BODY ");
-            out.addAll(bodyData);
+                out.add("SUBJECT ");
+                out.addAll(subjectData);
+
+                out.add("BODY ");
+                out.addAll(bodyData);
+            }
+            else{
+                // if not tokenizep, return list with from and subject fields only
+                out.add(fromAddrstr);
+                out.add(subject);
+            }
+
         }
         catch (MessagingException e) {
             System.err.println("MessagineException");
