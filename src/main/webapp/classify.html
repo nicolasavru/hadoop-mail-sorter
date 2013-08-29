@@ -1,0 +1,51 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>MailSorter</title>
+  <link rel="stylesheet" href="style.css" type="text/css">
+</head>
+<body>
+<h1>
+  Mail Sorting with Hadoop
+</h1>
+
+<div style="float:left; width:400px; padding-left:20px;">
+  <p>Classify Emails</p>
+  <form method="post" name="Classify" id="Classify" action="classify_s">
+    <fieldset>
+      <legend>Input</legend>
+      <dl>
+        <label for="jar">JAR file (Local)</label>
+        <input type="text" value="target/HadoopMailSorter-1.0.jar" name="jar" class="required" id="jar" />
+      </dl>
+      <dl>
+        <label for="input">Input Dir (HDFS)</label>
+        <input type="text" value="INBOX" name="input" class="required" id="input" />
+      </dl>
+      <dl>
+        <label for="model">Model File (HDFS)</label>
+        <input type="text" value="model" name="model" class="required" id="model" />
+      </dl>
+      <dl>
+        <label for="dictionary">Dictionary File (HDFS)</label>
+        <input type="text" value="vecdir/dictionary.file-0" name="dictionary" class="required" id="dictionary" />
+      </dl>
+      <dl>
+        <label for="frequency">Document Frequency File (HDFS)</label>
+        <input type="text" value="vecdir/df-count/part-r-00000" name="frequency" class="required" id="frequency" />
+      </dl>
+    </fieldset>
+    <fieldset>
+      <legend>Output</legend>
+      <dl>
+        <label for="output">Output Dir</label>
+        <input type="text" value="results" name="output" class="required" id="output" />
+      </dl>
+    </fieldset>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

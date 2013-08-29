@@ -12,7 +12,7 @@ import java.lang.ProcessBuilder;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class Maildir2seqServlet extends HttpServlet
+public class ClassifyServlet extends HttpServlet
 {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -31,10 +31,13 @@ public class Maildir2seqServlet extends HttpServlet
 
         String inputDir = req.getParameter("input");
         String outputDir = req.getParameter("output");
+        String model = req.getParameter("model");
+        String dictionary = req.getParameter("dictionary");
+        String frequency = req.getParameter("frequency");
         String jar = "target/HadoopMailSorter-1.0.jar"; // Should probably not be hardcoded
 
         PrintWriter out = resp.getWriter();
-        if (inputDir == null || outputDir == null) {
+        if (inputDir == null || outputDir == null || model == null || dictionary == null || frequency == null) {
             out.println("Invalid parameters");
             System.exit(-1);
         }
@@ -52,7 +55,7 @@ public class Maildir2seqServlet extends HttpServlet
 
         Process pb = new ProcessBuilder(
             "hadoop", "jar",
-            jar, mainClass, "maildir2seq", inputDir, outputDir
+            jar, mainClass, "classify", model, dictionary, frequency, inputDir, outputDir
         ).start();
 
         // Display output and error messages
@@ -82,5 +85,3 @@ public class Maildir2seqServlet extends HttpServlet
         return s.hasNext() ? s.next() : "";
     }
 }
-
-

@@ -50,5 +50,12 @@
     <url-pattern>/testnb_s/*</url-pattern>
   </servlet-mapping>
 
-
+  <servlet>
+    <servlet-name>ClassifyServlet</servlet-name>
+    <servlet-class>edu.cooper.ece460.http.ClassifyServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ClassifyServlet</servlet-name>
+    <url-pattern>/classify_s/*</url-pattern>
+  </servlet-mapping>
 </web-app>
