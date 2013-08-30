@@ -15,7 +15,26 @@ public class ResultReaderMap extends Mapper<LongWritable, Text, Text, Text> {
     public static enum FILE_COUNTER {
         FOO,
     };
-    
+
+    private static Map<Integer,String> labels;
+
+    private static void initMap(Context context) throws IOException {
+        if (labels == null) {
+            synchronized (ResultReaderMap.class) {
+                if (labels == null) {
+                    Configuration conf = context.getConfiguration();
+                    String labelIndex = conf.get("labelIndex");
+                    labels = BayesUtils.readLabelIndex(conf, new Path(labelIndex));
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void setup(Context context) throws IOException, InterruptedException {
+        initMap(context);
+    }
+
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException{
         context.getCounter(FILE_COUNTER.FOO).increment(1);
@@ -28,10 +47,6 @@ public class ResultReaderMap extends Mapper<LongWritable, Text, Text, Text> {
         Configuration conf = context.getConfiguration();
         Path path = new Path(email_file);
         FileSystem fs = path.getFileSystem(conf);
-
-        String labelIndex = conf.get("labelIndex");
-
-        Map<Integer,String> labels = BayesUtils.readLabelIndex(conf, new Path(labelIndex));
 
         String fileData = "";
         FSDataInputStream in = fs.open(new Path(email_file));
@@ -50,5 +65,6 @@ public class ResultReaderMap extends Mapper<LongWritable, Text, Text, Text> {
         }
 
         context.write(new Text(labels.get(category)), new Text(outstr));
+        context.progress();
     }
 }

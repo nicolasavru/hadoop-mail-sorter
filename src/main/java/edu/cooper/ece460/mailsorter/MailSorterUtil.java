@@ -133,7 +133,7 @@ public final class MailSorterUtil {
                     Multipart mp = (Multipart) content;
                     for (int i = 0; i < mp.getCount(); i++) {
                         BodyPart bp = mp.getBodyPart(i);
-                        System.err.println(bp.getContentType());
+                        // System.err.println(bp.getContentType());
                         Object c = bp.getContent();
                         if(c instanceof String){
                             body = (String) c;
@@ -149,10 +149,23 @@ public final class MailSorterUtil {
             }
 
             if(tokenizep){
-                List<String> fromData = tokenizeString(email_analyzer, fromAddrstr);
-                List<String> toData = tokenizeString(email_analyzer, toAddrstr);
-                List<String> subjectData = tokenizeString(standard_analyzer, subject);
-                List<String> bodyData = tokenizeString(standard_analyzer, body);
+                List<String> fromData = new ArrayList<String>();
+                List<String> toData = new ArrayList<String>();
+                List<String> subjectData = new ArrayList<String>();
+                List<String> bodyData = new ArrayList<String>();
+
+                if(fromAddrstr != null){
+                    fromData = tokenizeString(email_analyzer, fromAddrstr);
+                }
+                if(toAddrstr != null){
+                    toData = tokenizeString(email_analyzer, toAddrstr);
+                }
+                if(subject != null){
+                    subjectData = tokenizeString(standard_analyzer, subject);
+                }
+                if(body != null){
+                    bodyData = tokenizeString(standard_analyzer, body);
+                }
 
                 out.add("FROM ");
                 out.addAll(fromData);

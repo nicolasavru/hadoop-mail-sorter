@@ -26,7 +26,8 @@ public class HadoopMailSorter {
         conf.set("seqdir", args[2]);
 
         // do not create a new jvm for each task
-        conf.setLong("mapred.job.reuse.jvm.num.tasks", -1);
+        // conf.setLong("mapred.job.reuse.jvm.num.tasks", -1);
+        conf.setLong("mapreduce.job.max.split.locations", 20);
 
         Job job = new Job(conf, "HadoopMailSorter");
         job.setJarByClass(HadoopMailSorter.class);
@@ -64,6 +65,7 @@ public class HadoopMailSorter {
 
         // do not create a new jvm for each task
         conf.setLong("mapred.job.reuse.jvm.num.tasks", -1);
+        conf.setLong("mapreduce.job.max.split.locations", 20);
 
         Job job = new Job(conf, "classifier");
         job.setJarByClass(HadoopMailSorter.class);
@@ -89,11 +91,13 @@ public class HadoopMailSorter {
 
         // do not create a new jvm for each task
         conf.setLong("mapred.job.reuse.jvm.num.tasks", -1);
+        conf.setLong("mapreduce.job.max.split.locations", 20);
+        conf.setLong("mapred.max.split.size", 2048);
 
         Job job = new Job(conf, "resultReader");
         job.setJarByClass(HadoopMailSorter.class);
         job.setMapperClass(ResultReaderMap.class);
-        job.setNumReduceTasks(50);
+        // job.setNumReduceTasks(50);
         job.setInputFormatClass(TextInputFormat.class);
         job.setOutputFormatClass(TextOutputFormat.class);
         job.setOutputKeyClass(Text.class);
