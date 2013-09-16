@@ -5,12 +5,20 @@ Train a Naive Bayes classifier on sorted mail and use it to sort new
 mail using Hadoop.
 
 Dependencies:
-Hadoop 1.1.1
-Mahout 0.8
-Lucene 4.3
-JavaMail
-Commons Codec
-Commons Lang3
+* Hadoop 1.1.1
+* Mahout 0.8
+* Lucene 4.3
+* JavaMail
+* Commons Codec
+* Commons Lang3
+
+The following blog posts and associated code were extremely useful for
+this project:
+
+* http://skife.org/mahout/2013/02/14/first_steps_with_mahout.html
+* http://chimpler.wordpress.com/2013/03/13/using-the-mahout-naive-bayes-classifier-to-automatically-classify-twitter-messages/
+* http://chimpler.wordpress.com/2013/06/24/using-the-mahout-naive-bayes-classifier-to-automatically-classify-twitter-messages-part-2-distribute-classification-with-hadoop/
+
 
 ##Build
 
