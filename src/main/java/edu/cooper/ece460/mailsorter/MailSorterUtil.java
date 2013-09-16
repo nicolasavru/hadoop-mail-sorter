@@ -140,6 +140,7 @@ public final class MailSorterUtil {
                         }
                     }
                 }
+            // people do really evil things with email, we're not sorting through it all now
             } catch (DecodingException e) {
                 System.err.println("DecodingException");
             } catch (UnsupportedEncodingException e){
